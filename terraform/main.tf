@@ -1,26 +1,3 @@
-provider "aws" {
-  region     = "us-west-2"
-}
-
-data "aws_vpc" "selected" {
-  filter {
-    name   = "tag:Name"
-    values = ["${var.aws_vpc_tag_name}"]
-  }
-}
-
-data "aws_security_group" "sg" {
-  filter {
-    name   = "group-name"
-    values = ["${var.aws_sg_group_name}"]
-  }
-
-  filter {
-    name   = "vpc-id"
-    values = ["${data.aws_vpc.selected.id}"] 
-  }
-}
-
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "${var.s3_bucket_name}"
 
