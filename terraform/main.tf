@@ -5,14 +5,14 @@ provider "aws" {
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["George"]
+    values = ["${var.aws_vpc_tag_name}"]
   }
 }
 
 data "aws_security_group" "sg" {
   filter {
     name   = "group-name"
-    values = ["MyFirewall"] 
+    values = ["${var.aws_sg_group_name}"]
   }
 
   filter {
@@ -22,7 +22,7 @@ data "aws_security_group" "sg" {
 }
 
 resource "aws_security_group" "default" {
-  name = "Bastion-SG"
+  name = "${var.aws_sg_default_name}"
 }
 
 resource "aws_security_group_rule" "allow_all" {
@@ -62,7 +62,7 @@ resource "aws_instance" "myfirstec2" {
   ami = "${var.ami_id}"
   instance_type = "t2.micro"
   vpc_security_group_ids = ["${aws_security_group.instance.id}"]
-  key_name = "${var.key_pair_key_name}}"
+  key_name = "${var.key_pair_key_name}"
   user_data = <<-EOF
 	      #!/bin/bash
 	      yum install httpd -y
