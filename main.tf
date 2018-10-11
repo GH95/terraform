@@ -2,6 +2,40 @@ provider "aws" {
   region     = "us-west-2"
 }
 
+data "aws_vpc" "selected" {
+  filter {
+    name   = "tag:Name"
+    values = ["George"]
+  }
+}
+
+data "aws_security_group" "sg" {
+  filter {
+    name   = "group-name"
+    values = ["MyFirewall"] 
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = ["${data.aws_vpc.selected.id}"] 
+  }
+}
+
+resource "aws_security_group" "default" {
+  name = "Bastion-SG"
+}
+
+resource "aws_security_group_rule" "allow_all" {
+  type      = "ingress"
+  from_port = 80
+  to_port   = 80
+  protocol  = "tcp"
+
+  source_security_group_id = "${data.aws_security_group.sg.id}"
+
+  security_group_id = "${aws_security_group.default.id}"
+}
+
 resource "aws_instance" "myfirstec2" {
   ami = ""
   instance_type = "t2.micro"
