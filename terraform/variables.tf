@@ -33,3 +33,15 @@ variable "aws_sg_group_name" {
 variable "aws_sg_default_name" {
   default = ""
 }
+
+variable "s3_bucket_name" {
+  default = ""
+}
+
+variable "dynamodb_table_name" {
+  default = ""
+}
+
+variable "dynamodb_hash_key" {
+  default = ""
+}

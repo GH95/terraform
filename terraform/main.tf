@@ -21,6 +21,30 @@ data "aws_security_group" "sg" {
   }
 }
 
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "${var.s3_bucket_name}"
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_dynamodb_table" "terraform_state_lock" {
+  name           = "${var.dynamodb_table_name}"
+  read_capacity  = 1
+  write_capacity = 1
+  hash_key       = "${var.dynamodb_hash_key}"
+
+  attribute {
+    name = "${var.dynamodb_hash_key}"
+    type = "S"
+  }
+}
+
 resource "aws_security_group" "default" {
   name = "${var.aws_sg_default_name}"
 }
